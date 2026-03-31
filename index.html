@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Secret Admirer | A Heartfelt Confession</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      user-select: none;
+    }
+
+    body {
+      min-height: 100vh;
+      background: linear-gradient(145deg, #fdeff2 0%, #ffdde1 100%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Segoe UI', 'Quicksand', system-ui, -apple-system, 'Poppins', cursive;
+      padding: 1rem;
+      margin: 0;
+      cursor: pointer;
+    }
+
+    .valentine-card {
+      max-width: 620px;
+      width: 100%;
+      background: rgba(255, 250, 245, 0.96);
+      backdrop-filter: blur(2px);
+      border-radius: 68px 68px 72px 72px;
+      box-shadow: 0 25px 45px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255, 215, 200, 0.6);
+      transition: transform 0.25s ease;
+      overflow: hidden;
+      padding: 1.8rem 2rem 2.2rem;
+      text-align: center;
+    }
+
+    .gift-sealed {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1.2rem;
+      transition: all 0.3s;
+    }
+
+    .bouquet-reveal {
+      display: none;
+      animation: gentleRise 0.7s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+    }
+
+    .show-bouquet .gift-sealed {
+      display: none;
+    }
+
+    .show-bouquet .bouquet-reveal {
+      display: block;
+    }
+
+    .gift-icon {
+      font-size: 5.2rem;
+      filter: drop-shadow(0 12px 18px rgba(0, 0, 0, 0.2));
+      transition: transform 0.2s;
+      cursor: pointer;
+    }
+
+    .gift-icon:hover {
+      transform: scale(1.02);
+    }
+
+    .click-hint {
+      background: #ffb7c5;
+      padding: 0.5rem 1.4rem;
+      border-radius: 60px;
+      color: #5e2a2f;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      font-size: 1rem;
+      box-shadow: inset 0 1px 1px rgba(255,255,240,0.7), 0 4px 8px rgba(0,0,0,0.05);
+      backdrop-filter: blur(4px);
+    }
+
+    .click-hint span {
+      display: inline-block;
+      animation: softPulse 1.4s infinite;
+    }
+
+    .flower-canvas-area {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    canvas {
+      background: radial-gradient(circle at 30% 20%, #fff7e8, #ffe6d5);
+      border-radius: 62px;
+      width: 100%;
+      height: auto;
+      box-shadow: 0 12px 28px rgba(110, 50, 40, 0.2);
+      display: block;
+      cursor: pointer;
+      transition: all 0.2s;
+      max-width: 460px;
+      margin: 0 auto;
+    }
+
+    .message-area {
+      background: #fff9f0;
+      padding: 1.3rem 1.6rem;
+      border-radius: 48px;
+      margin-top: 0.5rem;
+      border: 1px solid #ffe0cc;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+      position: relative;
+      max-height: 60vh;
+      overflow-y: auto;
+    }
+
+    .message-area::-webkit-scrollbar {
+      width: 5px;
+    }
+
+    .message-area::-webkit-scrollbar-track {
+      background: #ffe0d0;
+      border-radius: 10px;
+    }
+
+    .message-area::-webkit-scrollbar-thumb {
+      background: #e6a5b3;
+      border-radius: 10px;
+    }
+
+    .love-note {
+      font-size: 1.02rem;
+      font-weight: 500;
+      color: #aa4e5c;
+      line-height: 1.55;
+      text-align: center;
+    }
+
+    .love-note .greeting {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #d43f56;
+      margin-bottom: 0.75rem;
+      letter-spacing: -0.2px;
+    }
+
+    .love-note .confession-text {
+      margin: 0.8rem 0;
+      font-style: normal;
+      text-align: left;
+    }
+
+    .love-note .confession-text p {
+      margin-bottom: 0.9rem;
+    }
+
+    .signature {
+      margin-top: 1rem;
+      font-style: italic;
+      font-size: 1rem;
+      color: #b9737e;
+      border-top: 1px dashed #ffcfbc;
+      padding-top: 0.8rem;
+      display: inline-block;
+      font-weight: 600;
+    }
+
+    .admirer-name {
+      font-weight: 800;
+      background: linear-gradient(135deg, #e66a7c, #ff9a8b);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+      letter-spacing: 0.3px;
+    }
+
+    .heart-icon {
+      display: inline-block;
+      animation: heartbeat 1.4s infinite ease;
+    }
+
+    .music-control {
+      position: fixed;
+      bottom: 18px;
+      right: 18px;
+      background: rgba(255, 240, 235, 0.85);
+      backdrop-filter: blur(6px);
+      border-radius: 60px;
+      padding: 8px 14px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: #b34e5e;
+      border: 1px solid #ffe0d0;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      cursor: pointer;
+      z-index: 1000;
+      transition: 0.2s;
+      font-family: inherit;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .music-control:hover {
+      background: #ffede8;
+      transform: scale(1.02);
+    }
+
+    .music-control span {
+      font-size: 1rem;
+    }
+
+    button {
+      background: none;
+      border: none;
+    }
+
+    @keyframes gentleRise {
+      0% {
+        opacity: 0;
+        transform: translateY(24px) scale(0.96);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    @keyframes softPulse {
+      0% { opacity: 0.7; transform: scale(1);}
+      50% { opacity: 1; transform: scale(1.03); text-shadow: 0 0 3px #ffb7bb;}
+      100% { opacity: 0.7; transform: scale(1);}
+    }
+
+    @keyframes heartbeat {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.12); }
+    }
+
+    @media (max-width: 500px) {
+      .valentine-card {
+        padding: 1.2rem 1.2rem 1.8rem;
+      }
+      .love-note {
+        font-size: 0.9rem;
+      }
+      .love-note .greeting {
+        font-size: 1.05rem;
+      }
+      .click-hint {
+        font-size: 0.85rem;
+      }
+      .music-control {
+        bottom: 12px;
+        right: 12px;
+        padding: 5px 10px;
+        font-size: 0.7rem;
+      }
+      .message-area {
+        padding: 1rem 1.2rem;
+        max-height: 55vh;
+      }
+      .love-note .confession-text p {
+        margin-bottom: 0.7rem;
+      }
+    }
+
+    .floating-petal {
+      position: fixed;
+      pointer-events: none;
+      font-size: 1.2rem;
+      z-index: 999;
+      opacity: 0.7;
+      animation: floatPetals 2.2s ease-out forwards;
+    }
+
+    @keyframes floatPetals {
+      0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 0.8;
+      }
+      100% {
+        transform: translateY(-100px) rotate(35deg);
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="valentine-card" id="cardContainer">
+  <!-- GIFT SEALED STATE -->
+  <div class="gift-sealed" id="giftSealedDiv">
+    <div class="gift-icon" id="giftOpenTrigger">🎁</div>
+    <div class="click-hint"><span>✨ Click to open ✨</span></div>
+    <div style="font-size: 0.85rem; color:#b65c6b; margin-top: 0.2rem;">A Gift For You!</div>
+  </div>
+
+  <!-- BOUQUET REVEAL STATE with HEARTFELT CONFESSION -->
+  <div class="bouquet-reveal" id="bouquetRevealDiv">
+    <div class="flower-canvas-area">
+      <canvas id="flowerCanvas" width="500" height="400" style="width:100%; height:auto; max-width:500px; aspect-ratio:500/400"></canvas>
+      <div class="message-area">
+        <div class="love-note">
+          <div class="greeting">💌 Hello Ma'am<strong>Sungit Pintas</strong>, 💌</div>
+          <div class="confession-text">
+            <p>🌸 I've been holding something in my heart for so long, and today I finally found the courage to say it...</p>
+            <p>✨ <strong>I have a huge crush on you and like you to</strong> ✨</p>
+            <p>I know you don't really know who I am… I'm just someone who quietly admires you from afar. Seeing you somehow completes my day, and even the smallest glimpse of your smile stays with me longer than you could imagine. When I catch a glimpse of your eyes, it makes all the bad moments fade away. Somehow, without even trying, you bring a kind of peace and happiness into my world that I didn't know I needed.</p>
+            <p>I don't even know the exact reason why I like you… I can't seem to find the right words to explain it. Maybe it's just the way you are, or the way you make everything feel lighter without even noticing. All I know is that my feelings are real, even if I can't fully understand them myself.</p>
+            <p>I'm not writing this to get close to you or expect anything in return. I'm writing this because I've been holding these feelings in for a long time. I don't have the courage to say this in person because I'm shy and a little scared. I just wanted to share this simple message, hoping that by finally saying it, my heart will feel a little lighter.</p>
+            <p>🌹 No matter what happens after this, I just want you to know that someone out here appreciates you more than you know.</p>
+          </div>
+          <div class="signature">
+            With all my heart, <span class="admirer-name">Your Secret Admirer</span> <span class="heart-icon">❤️</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- hidden audio element for background music -->
+<audio id="bgMusic" preload="auto" loop>
+  <source src="https://cdn.pixabay.com/download/audio/2022/05/27/audio_7c7f9d6f2a.mp3?filename=i-think-they-call-this-love-cover-113007.mp3" type="audio/mpeg">
+  Your browser does not support the audio element.
+</audio>
+
+<!-- small music toggle button -->
+<div class="music-control" id="musicToggleBtn" style="display: none;">
+  <span>🎵</span> <span id="musicStatus">Music: Off</span>
+</div>
+
+<script>
+  (function() {
+    // ----- MUSIC HANDLING -----
+    const audio = document.getElementById('bgMusic');
+    const musicToggle = document.getElementById('musicToggleBtn');
+    const musicStatusSpan = document.getElementById('musicStatus');
+    
+    audio.volume = 0.45;   // medium sound level
+    audio.loop = true;
+    
+    let musicPlaying = false;
+    
+    function startMusic() {
+      if (!musicPlaying) {
+        const playPromise = audio.play();
+        if (playPromise !== undefined) {
+          playPromise.then(() => {
+            musicPlaying = true;
+            if (musicStatusSpan) musicStatusSpan.innerText = 'Music: On';
+            musicToggle.style.display = 'flex';
+          }).catch(err => {
+            console.warn("Autoplay prevented, retrying:", err);
+            setTimeout(() => {
+              audio.play().then(() => {
+                musicPlaying = true;
+                if (musicStatusSpan) musicStatusSpan.innerText = 'Music: On';
+                musicToggle.style.display = 'flex';
+              }).catch(e => console.log("still blocked:", e));
+            }, 100);
+          });
+        }
+      }
+    }
+    
+    function stopMusic() {
+      if (musicPlaying) {
+        audio.pause();
+        musicPlaying = false;
+        if (musicStatusSpan) musicStatusSpan.innerText = 'Music: Off';
+      }
+    }
+    
+    function toggleMusic() {
+      if (musicPlaying) {
+        stopMusic();
+      } else {
+        startMusic();
+      }
+    }
+    
+    if (musicToggle) {
+      musicToggle.addEventListener('click', (e) => {
+        e.stopPropagation();
+        toggleMusic();
+      });
+    }
+    
+    // ----- CANVAS BOUQUET DRAWING LOGIC -----
+    const canvas = document.getElementById('flowerCanvas');
+    const ctx = canvas.getContext('2d');
+    let width = 500;
+    let height = 400;
+    canvas.width = width;
+    canvas.height = height;
+    
+    const flowers = [
+      { x: 110, y: 310, type: 'rose', color: '#E86A6F', centerColor: '#C73E46', size: 26, angleOffset: 0 },
+      { x: 170, y: 295, type: 'daisy', color: '#F9E0A8', centerColor: '#F5B642', size: 24, angleOffset: 0.3 },
+      { x: 230, y: 285, type: 'rose', color: '#E6858B', centerColor: '#C44952', size: 27, angleOffset: 0.5 },
+      { x: 295, y: 300, type: 'tulip', color: '#F9ACB5', centerColor: '#DD6F7A', size: 26, angleOffset: 0.2 },
+      { x: 360, y: 315, type: 'daisy', color: '#FFEFB9', centerColor: '#E5A23B', size: 24, angleOffset: -0.2 },
+      { x: 70, y: 330, type: 'rose', color: '#D96470', centerColor: '#B63A44', size: 23, angleOffset: 0.4 },
+      { x: 420, y: 325, type: 'tulip', color: '#F89FAA', centerColor: '#D65C68', size: 25, angleOffset: 0.1 },
+      { x: 190, y: 260, type: 'daisy', color: '#FFF0C0', centerColor: '#F0B152', size: 22, angleOffset: 0.7 },
+      { x: 310, y: 268, type: 'rose', color: '#E2757C', centerColor: '#C1414B', size: 24, angleOffset: -0.3 },
+      { x: 265, y: 315, type: 'tulip', color: '#FBB1BC', centerColor: '#D7626E', size: 27, angleOffset: 0.15 },
+      { x: 140, y: 340, type: 'daisy', color: '#FDEFBF', centerColor: '#E6AA48', size: 23, angleOffset: -0.1 },
+      { x: 390, y: 290, type: 'rose', color: '#F27C87', centerColor: '#CA4954', size: 26, angleOffset: 0.6 }
+    ];
+    
+    function drawStem(x, y, heightOffset = 35) {
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+      const stemEndY = y + heightOffset;
+      ctx.lineTo(x, stemEndY);
+      ctx.lineWidth = 4;
+      ctx.strokeStyle = '#5B8C5A';
+      ctx.shadowBlur = 0;
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(x - 4, y + heightOffset * 0.6);
+      ctx.quadraticCurveTo(x - 8, y + heightOffset * 0.5, x - 2, y + heightOffset * 0.4);
+      ctx.fillStyle = '#558B42';
+      ctx.fill();
+      ctx.beginPath();
+      ctx.moveTo(x + 4, y + heightOffset * 0.7);
+      ctx.quadraticCurveTo(x + 9, y + heightOffset * 0.55, x + 3, y + heightOffset * 0.45);
+      ctx.fill();
+    }
+    
+    function drawRose(cx, cy, radius, petalColor, centerColor, angleShift = 0) {
+      ctx.save();
+      ctx.shadowBlur = 3;
+      ctx.shadowColor = "rgba(0,0,0,0.1)";
+      for (let i = 0; i < 12; i++) {
+        const angle = (i / 12) * Math.PI * 2 + angleShift;
+        const petalRadius = radius * (0.65 + Math.sin(i * 0.9) * 0.2);
+        const px = cx + Math.cos(angle) * petalRadius * 0.85;
+        const py = cy + Math.sin(angle) * petalRadius * 0.8;
+        ctx.beginPath();
+        ctx.ellipse(px, py, radius * 0.5, radius * 0.6, angle, 0, Math.PI * 2);
+        ctx.fillStyle = petalColor;
+        ctx.fill();
+      }
+      ctx.beginPath();
+      ctx.arc(cx, cy, radius * 0.42, 0, 2 * Math.PI);
+      ctx.fillStyle = centerColor;
+      ctx.fill();
+      ctx.beginPath();
+      ctx.arc(cx - 2, cy - 2, radius * 0.18, 0, 2 * Math.PI);
+      ctx.fillStyle = '#FFE484';
+      ctx.fill();
+      ctx.restore();
+    }
+    
+    function drawDaisy(cx, cy, radius, petalColor, centerColor, angleShift) {
+      ctx.save();
+      ctx.shadowBlur = 2;
+      const petalCount = 12;
+      for (let i = 0; i < petalCount; i++) {
+        const angle = (i / petalCount) * Math.PI * 2 + angleShift;
+        const px = cx + Math.cos(angle) * radius * 0.75;
+        const py = cy + Math.sin(angle) * radius * 0.75;
+        ctx.beginPath();
+        ctx.ellipse(px, py, radius * 0.45, radius * 0.6, angle, 0, Math.PI * 2);
+        ctx.fillStyle = petalColor;
+        ctx.fill();
+      }
+      ctx.beginPath();
+      ctx.arc(cx, cy, radius * 0.4, 0, 2 * Math.PI);
+      ctx.fillStyle = centerColor;
+      ctx.fill();
+      ctx.beginPath();
+      ctx.arc(cx - 1, cy - 1, radius * 0.15, 0, 2 * Math.PI);
+      ctx.fillStyle = '#8B5A2B';
+      ctx.fill();
+      ctx.restore();
+    }
+    
+    function drawTulip(cx, cy, radius, petalColor, centerColor, angleShift) {
+      ctx.save();
+      ctx.shadowBlur = 3;
+      ctx.beginPath();
+      ctx.ellipse(cx, cy - radius * 0.2, radius * 0.8, radius * 0.9, 0, 0, Math.PI * 2);
+      ctx.fillStyle = petalColor;
+      ctx.fill();
+      for (let i = -1; i <= 1; i++) {
+        ctx.beginPath();
+        ctx.ellipse(cx + i * radius * 0.45, cy - radius * 0.1, radius * 0.45, radius * 0.7, 0, 0, Math.PI * 2);
+        ctx.fillStyle = petalColor;
+        ctx.fill();
+      }
+      ctx.beginPath();
+      ctx.arc(cx, cy - radius * 0.1, radius * 0.32, 0, 2 * Math.PI);
+      ctx.fillStyle = centerColor;
+      ctx.fill();
+      ctx.fillStyle = '#FED966';
+      ctx.beginPath();
+      ctx.arc(cx - 1, cy - radius * 0.15, radius * 0.12, 0, 2 * Math.PI);
+      ctx.fill();
+      ctx.restore();
+    }
+    
+    function drawBouquet() {
+      if (!ctx) return;
+      ctx.clearRect(0, 0, width, height);
+      ctx.fillStyle = "#ffe2d0";
+      ctx.fillRect(0, 0, width, height);
+      ctx.fillStyle = "#cbe5b4";
+      ctx.beginPath();
+      ctx.rect(0, height-55, width, 60);
+      ctx.fill();
+      for(let i=0;i<20;i++) {
+        ctx.beginPath();
+        ctx.moveTo(20 + i*25, height-50);
+        ctx.lineTo(25 + i*25, height-70);
+        ctx.lineTo(30 + i*25, height-50);
+        ctx.fillStyle = "#77aa55";
+        ctx.fill();
+      }
+      flowers.forEach(f => {
+        const baseY = f.y;
+        const stemLength = 32;
+        drawStem(f.x, baseY, stemLength);
+      });
+      flowers.forEach(f => {
+        const { x, y, type, color, centerColor, size, angleOffset } = f;
+        const radius = size;
+        if (type === 'rose') {
+          drawRose(x, y, radius, color, centerColor, angleOffset);
+        } else if (type === 'daisy') {
+          drawDaisy(x, y, radius, color, centerColor, angleOffset);
+        } else if (type === 'tulip') {
+          drawTulip(x, y, radius, color, centerColor, angleOffset);
+        }
+      });
+      ctx.fillStyle = "#FFD966";
+      for (let i = 0; i < 35; i++) {
+        ctx.beginPath();
+        ctx.arc(30 + i * 14, height - 45 + Math.sin(i) * 5, 1.5, 0, 2 * Math.PI);
+        ctx.fillStyle = "#FFC493";
+        ctx.fill();
+      }
+      ctx.fillStyle = "#FFB347";
+      for (let s=0; s<70; s++) {
+        if(s%2 ===0) continue;
+        ctx.beginPath();
+        ctx.arc(15 + s*7, height-38 + Math.cos(s)*4, 1.2, 0, 2*Math.PI);
+        ctx.fill();
+      }
+      ctx.fillStyle = "#F4A261";
+      ctx.beginPath();
+      ctx.ellipse(250, 350, 35, 12, 0, 0, Math.PI*2);
+      ctx.fill();
+      ctx.fillStyle = "#E76F51";
+      ctx.beginPath();
+      ctx.moveTo(250, 345);
+      ctx.lineTo(260, 360);
+      ctx.lineTo(240, 360);
+      ctx.fill();
+    }
+    
+    function createFloatingPetals() {
+      for (let i = 0; i < 45; i++) {
+        const petal = document.createElement('div');
+        petal.className = 'floating-petal';
+        const petalsList = ['🌸', '🌼', '🌺', '🌷', '🌸', '💮', '🌻', '❤️', '💖', '✨'];
+        petal.innerText = petalsList[Math.floor(Math.random() * petalsList.length)];
+        const startX = Math.random() * window.innerWidth;
+        const startY = window.innerHeight - 80;
+        petal.style.left = startX + 'px';
+        petal.style.top = startY + 'px';
+        petal.style.fontSize = 18 + Math.random() * 20 + 'px';
+        petal.style.position = 'fixed';
+        petal.style.pointerEvents = 'none';
+        petal.style.zIndex = '9999';
+        document.body.appendChild(petal);
+        const duration = 1.8 + Math.random() * 1.5;
+        petal.style.transition = `all ${duration}s ease-out`;
+        requestAnimationFrame(() => {
+          petal.style.transform = `translateY(-${130 + Math.random() * 160}px) translateX(${-30 + Math.random() * 70}px) rotate(${Math.random() * 90}deg)`;
+          petal.style.opacity = '0';
+        });
+        setTimeout(() => {
+          if(petal && petal.remove) petal.remove();
+        }, duration * 1000);
+      }
+    }
+    
+    // ----- GIFT OPEN LOGIC (with music start)-----
+    let isOpened = false;
+    const card = document.getElementById('cardContainer');
+    const giftTrigger = document.getElementById('giftOpenTrigger');
+    const giftSealedDiv = document.getElementById('giftSealedDiv');
+    
+    function openGift() {
+      if (isOpened) return;
+      isOpened = true;
+      
+      card.classList.add('show-bouquet');
+      drawBouquet();
+      createFloatingPetals();
+      startMusic();
+      
+      if ('vibrate' in navigator) {
+        navigator.vibrate(50);
+      }
+      console.log("🌸 Bouquet opened with a heartfelt confession! 🌸");
+    }
+    
+    giftTrigger.addEventListener('click', (e) => {
+      e.stopPropagation();
+      openGift();
+    });
+    
+    giftSealedDiv.addEventListener('click', (e) => {
+      if(e.target === giftSealedDiv || e.target.closest('.click-hint') || e.target.closest('.gift-icon')) {
+        openGift();
+      }
+    });
+    
+    canvas.addEventListener('click', () => {
+      if (isOpened) {
+        for(let i=0;i<18;i++) {
+          const heartSpan = document.createElement('div');
+          heartSpan.className = 'floating-petal';
+          heartSpan.innerText = ['❤️', '💖', '🌹', '🌸', '💐', '✨', '💗', '🌼'][Math.floor(Math.random()*8)];
+          heartSpan.style.left = (Math.random() * window.innerWidth) + 'px';
+          heartSpan.style.top = (window.innerHeight - 100) + 'px';
+          heartSpan.style.fontSize = '20px';
+          document.body.appendChild(heartSpan);
+          setTimeout(() => {
+            heartSpan.style.transform = `translateY(-${90+Math.random()*130}px) translateX(${-25+Math.random()*60}px) rotate(15deg)`;
+            heartSpan.style.opacity = '0';
+          }, 10);
+          setTimeout(() => heartSpan.remove(), 1800);
+        }
+      }
+    });
+    
+    window.addEventListener('resize', () => {
+      if (isOpened) {
+        drawBouquet();
+      }
+    });
+    
+    ctx.fillStyle = "#ffe2d0";
+    ctx.fillRect(0, 0, width, height);
+    ctx.fillStyle = "#ddb892";
+    ctx.font = "italic 16px 'Segoe UI'";
+    ctx.fillText("💐 a heartfelt confession awaits...", 130, 200);
+    
+    document.addEventListener('keydown', (e) => {
+      if (e.code === 'Space' && !isOpened && document.activeElement?.tagName !== 'INPUT') {
+        e.preventDefault();
+        openGift();
+      }
+    });
+    
+    audio.addEventListener('canplaythrough', () => {
+      audio.volume = 0.45;
+    });
+    audio.volume = 0.45;
+  })();
+</script>
+</body>
+</html>
